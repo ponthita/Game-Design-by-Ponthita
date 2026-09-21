@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ponthita Game Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Kanit:wght@300;400;700&display=swap');
+
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff00ea;
+            --bg-dark: #0a0a12;
+            --card-bg: #151522;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Kanit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- Navbar --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 18, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            color: #fff;
+            text-decoration: none;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        /* --- Hero Section & Interactive Game --- */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            cursor: crosshair;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            pointer-events: none; /* ให้คลิกทะลุไปโดน Canvas ด้านหลังได้ */
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255, 0, 234, 0.3);
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #a9b0c0;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .score-board {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+            padding: 10px 20px;
+            border: 1px solid var(--neon-blue);
+            border-radius: 5px;
+            display: inline-block;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            pointer-events: auto; /* ให้เลือกครอบคลุมได้ */
+        }
+
+        /* --- Featured Games Section --- */
+        .featured {
+            padding: 80px 50px;
+            background-color: var(--bg-dark);
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #fff;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .game-card {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            transition: 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,0,234,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: 0.4s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-pink);
+            box-shadow: 0 10px 30px rgba(255, 0, 234, 0.2);
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .game-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--neon-blue);
+        }
+
+        .game-card p {
+            color: #a9b0c0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">PONTHITA<span style="color: var(--neon-pink);">.STUDIO</span></a>
+        <nav class="nav-links">
+            <a href="#games">GAMES</a>
+            <a href="#about">ABOUT</a>
+            <a href="#contact">CONTACT</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <canvas id="gameCanvas"></canvas>
+        <div class="hero-content">
+            <h1>CRAFTING<br>DIGITAL WORLDS</h1>
+            <h2>คลิกที่ดวงไฟนีออนด้านหลังเพื่อทดสอบความแม่นยำของคุณ!</h2>
+            <div class="score-board">SCORE: <span id="scoreVal">0</span></div>
+        </div>
+    </section>
+
+    <section class="featured" id="games">
+        <h2 class="section-title">FEATURED PROJECTS</h2>
+        <div class="game-grid">
+            
+            <div class="game-card">
+                <div class="game-icon">⚔️</div>
+                <h3>Neon Blade</h3>
+                <p>เกมแอคชั่นฟันดาบจังหวะความเร็วสูงในโลกไซเบอร์พังค์ กราฟิกจัดเต็มด้วยแสงสีนีออนและการต่อสู้ที่ต้องใช้การตัดสินใจในเสี้ยววินาที</p>
+            </div>
+
+            <div class="game-card">
+                <div class="game-icon">🧩</div>
+                <h3>Quantum Puzzle</h3>
+                <p>ไขปริศนามิติควอนตัมด้วยการสลับกฎฟิสิกส์ เกมแนวพัซเซิลที่ท้าทายสมองและมอบประสบการณ์การเล่นที่แปลกใหม่ไม่ซ้ำใคร</p>
+            </div>
+
+            <div class="game-card">
+                <div class="game-icon">🚀</div>
+                <h3>Starship Tycoon</h3>
+                <p>บริหารสถานีอวกาศและกองยานพาณิชย์ สำรวจดาวเคราะห์ใหม่ๆ ทำการค้า และป้องกันโจรสลัดอวกาศในเกมแนวซิมูเลชัน</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2026 GAME DESIGN BY PONTHITA. ALL RIGHTS RESERVED.
+    </footer>
+
+    <script>
+        // --- ระบบ Interactive Canvas (Mini-game ใน Header) ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let score = 0;
+        const scoreDisplay = document.getElementById('scoreVal');
+
+        // ปรับขนาด canvas ให้เต็มจอ
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let targets = [];
+
+        // สร้างดวงไฟเป้าหมาย
+        function createTarget() {
+            const size = Math.random() * 20 + 15;
+            const x = Math.random() * (canvas.width - size * 2) + size;
+            const y = canvas.height + size;
+            const speedY = Math.random() * 1.5 + 0.5;
+            const speedX = (Math.random() - 0.5) * 1;
+            // สุ่มสี นีออนฟ้า หรือ นีออนชมพู
+            const color = Math.random() > 0.5 ? '#00f3ff' : '#ff00ea';
+
+            targets.push({ x, y, size, speedY, speedX, color });
+        }
+
+        // ลูปอนิเมชัน
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < targets.length; i++) {
+                let t = targets[i];
+                t.y -= t.speedY;
+                t.x += t.speedX;
+
+                // วาดดวงไฟ
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, t.size, 0, Math.PI * 2);
+                ctx.fillStyle = t.color;
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = t.color;
+                ctx.fill();
+                ctx.closePath();
+
+                // ลบดวงไฟที่ลอยพ้นจอ
+                if (t.y + t.size < 0 || t.x < 0 || t.x > canvas.width) {
+                    targets.splice(i, 1);
+                    i--;
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // ยิงดวงไฟเมื่อคลิก
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            for (let i = targets.length - 1; i >= 0; i--) {
+                let t = targets[i];
+                const dist = Math.hypot(mouseX - t.x, mouseY - t.y);
+                if (dist <= t.size) {
+                    targets.splice(i, 1);
+                    score += 10;
+                    scoreDisplay.innerText = score;
+                    
+                    // เอฟเฟกต์กระตุกหน้าจอเบาๆ (Screen Shake) เมื่อยิงโดน
+                    document.body.style.transform = "translate(2px, 2px)";
+                    setTimeout(() => document.body.style.transform = "none", 50);
+                    break;
+                }
+            }
+        });
+
+        // สร้างดวงไฟใหม่ทุกๆ 800ms
+        setInterval(createTarget, 800);
+        animate();
+    </script>
+</body>
+</html>
